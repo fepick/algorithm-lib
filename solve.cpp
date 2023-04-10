@@ -6,8 +6,178 @@ using namespace std;
 struct uf;//대충구현, 사이클판별 구현예정
 struct seg;
 struct fenwick;
-struct bfs2d;
+struct bfs2d; //option(추가적인 bool 조건 판단)구현예정
 struct dfs2d;
+
+struct bfs2d
+{
+    int H;
+    int W;
+    const int dx[4] = {1,0,-1,0};
+    const int dy[4] = {0,1,0,-1};
+    const int ddx[8] = {1,1,0,-1,-1,-1,0,1};
+    const int ddy[8] = {0,1,1,1,0,-1,-1,-1};
+    vector<vector<int>> arr;
+    vector<vector<int>> vis;
+    queue<pair<int,int>> qq;
+    bfs2d(int H,int W):H(H),W(W){
+        arr.assign(H+1,vector<int>(W+1));
+        vis.assign(H+1,vector<int>(W+1));
+    }
+    bfs2d(vector<vector<int>> v){
+        H = v.size()-1;
+        W = v[0].size()-1;
+        arr=v;
+        vis.assign(H+1,vector<int>(W+1));
+    }
+    void visset(int y,int x,int value){
+        vis[y][x]=value;
+    }
+    void qset(int y,int x){
+        qq.emplace(y,x);
+    }
+    void bfs4way(){
+        while (!qq.empty())
+        {
+            pair<int,int> cur = qq.front();
+            qq.pop();
+            for (int i = 0; i < 4; i++)
+            {
+                int ny = cur.first+dy[i];
+                int nx = cur.second+dx[i];
+                if(ny>H||ny<1||nx>W||nx<1)continue;
+                if(vis[ny][nx]||arr[ny][nx]==-1)continue;
+                vis[ny][nx]=vis[cur.first][cur.second]+1;
+                qq.emplace(ny,nx);
+            }
+        }
+    }
+    void bfs8way(){
+        while (!qq.empty())
+        {
+            pair<int,int> cur = qq.front();
+            qq.pop();
+            for (int i = 0; i < 8; i++)
+            {
+                int ny = cur.first+ddy[i];
+                int nx = cur.second+ddx[i];
+                if(ny>H||ny<1||nx>W||nx<1)continue;
+                if(vis[ny][nx]||arr[ny][nx]==-1)continue;
+                vis[ny][nx]=vis[cur.first][cur.second]+1;
+                qq.emplace(ny,nx);
+            }
+        }
+    }
+    void arrprint(){
+        cout<<"-------arrprint--------\n";
+        for (auto i:arr)
+        {
+            for (auto j:i)
+            {
+                cout<<setw(3)<<j<<" ";
+            }
+            cout<<"\n";
+        }
+        cout<<"-------arrprint--------\n";
+    }
+    void visprint(){
+        cout<<"-------visprint--------\n";
+        for (auto i:vis)
+        {
+            for (auto j:i)
+            {
+                cout<<setw(3)<<j<<" ";
+            }
+            cout<<"\n";
+        }
+        cout<<"-------visprint--------\n";
+    }
+};
+
+struct dfs2d
+{
+    int H;
+    int W;
+    const int dx[4] = {1,0,-1,0};
+    const int dy[4] = {0,1,0,-1};
+    const int ddx[8] = {1,1,0,-1,-1,-1,0,1};
+    const int ddy[8] = {0,1,1,1,0,-1,-1,-1};
+    vector<vector<int>> arr;
+    vector<vector<int>> vis;
+    stack<pair<int,int>> qq;
+    dfs2d(int H,int W):H(H),W(W){
+        arr.assign(H+1,vector<int>(W+1));
+        vis.assign(H+1,vector<int>(W+1));
+    }
+    dfs2d(vector<vector<int>> v){
+        H = v.size()-1;
+        W = v[0].size()-1;
+        arr=v;
+        vis.assign(H+1,vector<int>(W+1));
+    }
+    void visset(int y,int x,int value){
+        vis[y][x]=value;
+    }
+    void stackset(int y,int x){
+        qq.emplace(y,x);
+    }
+    void dfs4way(){
+        while (!qq.empty())
+        {
+            pair<int,int> cur = qq.top();
+            qq.pop();
+            for (int i = 0; i < 4; i++)
+            {
+                int ny = cur.first+dy[i];
+                int nx = cur.second+dx[i];
+                if(ny>H||ny<1||nx>W||nx<1)continue;
+                if(vis[ny][nx]||arr[ny][nx]==-1)continue;
+                vis[ny][nx]=vis[cur.first][cur.second]+1;
+                qq.emplace(ny,nx);
+            }
+        }
+    }
+    void dfs8way(){
+        while (!qq.empty())
+        {
+            pair<int,int> cur = qq.top();
+            qq.pop();
+            for (int i = 0; i < 8; i++)
+            {
+                int ny = cur.first+ddy[i];
+                int nx = cur.second+ddx[i];
+                if(ny>H||ny<1||nx>W||nx<1)continue;
+                if(vis[ny][nx]||arr[ny][nx]==-1)continue;
+                vis[ny][nx]=vis[cur.first][cur.second]+1;
+                qq.emplace(ny,nx);
+            }
+        }
+    }
+    void arrprint(){
+        cout<<"-------arrprint--------\n";
+        for (auto i:arr)
+        {
+            for (auto j:i)
+            {
+                cout<<setw(3)<<j<<" ";
+            }
+            cout<<"\n";
+        }
+        cout<<"-------arrprint--------\n";
+    }
+    void visprint(){
+        cout<<"-------visprint--------\n";
+        for (auto i:vis)
+        {
+            for (auto j:i)
+            {
+                cout<<setw(3)<<j<<" ";
+            }
+            cout<<"\n";
+        }
+        cout<<"-------visprint--------\n";
+    }
+};
 
 set<int> sosu(int maxnum);
 ll dnc_pow(ll a,ll b,ll divisor=0);
@@ -44,7 +214,7 @@ struct uf{
 	void insert(int a,int b){
 		parent[findparent(a)]=findparent(b);
 	}
-}
+};
 
 set<int> sosu(int maxnum){
 	set<int> ans;
