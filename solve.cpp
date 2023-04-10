@@ -3,7 +3,7 @@
 #define ll long long
 using namespace std;
 
-struct uf;//구현중
+struct uf;//대충구현, 사이클판별 구현예정
 struct seg;
 struct fenwick;
 struct bfs2d;
@@ -12,6 +12,23 @@ struct dfs2d;
 set<int> sosu(int maxnum);
 ll dnc_pow(ll a,ll b,ll divisor=0);
 ll gcd(ll a,ll b);
+int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
+
+int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c){
+    	ll ans=0;
+	ll ax = a.first,ay=a.second;
+	ll bx = b.first,by=b.second;
+	ll cx = c.first,cy=c.second;
+    	ans+=ax*by;
+    	ans+=bx*cy;
+    	ans+=cx*ay;
+    	ans-=ay*bx;
+    	ans-=by*cx;
+    	ans-=cy*ax;
+    	if(ans==0)return 0;
+    	else if(ans>0)return 1;
+    	else return -1;
+}
 
 struct uf{
 	int size;
@@ -20,18 +37,12 @@ struct uf{
 		parent.resize(size+1);
 		for(int i=0;i<=size;i++)parent[i]=i;
 	}
-	uf(vector<vector<int>>&A){
-
-	}
-	findparent(int element){
+	int findparent(int element){
 		if(parent[element]==element)return element;
 		return parent[element] = findparent(parent[element]);
 	}
-	add(int a,int b){
+	void insert(int a,int b){
 		parent[findparent(a)]=findparent(b);
-	}
-	cycle(int element){
-
 	}
 }
 
@@ -64,7 +75,6 @@ ll dnc_pow(ll a,ll b,ll divisor=0){
 }
 
 ll gcd(ll a,ll b){ll r;while (b){r=a%b;a=b;b=r;}return a;}
-
 
 struct fenwick {
     using _T = long long;
