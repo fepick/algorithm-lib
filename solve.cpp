@@ -10,7 +10,7 @@ struct bfs2d; //option(추가적인 bool 조건 판단)구현예정
 struct dfs2d;
 struct dijkstra;
 
-set<int> sosu(int maxnum);
+vector<ll> sosu(ll maxnum);
 ll dnc_pow(ll a,ll b,ll divisor=0);
 ll gcd(ll a,ll b);
 int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
@@ -83,15 +83,15 @@ struct uf{
 	}
 };
 
-set<int> sosu(int maxnum){
-	set<int> ans;
-	bool eratos[maxnum+1];
+vector<ll> sosu(ll maxnum){
+	vector<ll> ans;
+	bool eratos[maxnum+1]={0,};
 	eratos[0]=1;eratos[1]=1;
-	for (int i = 2; i <= sqrt(maxnum); i++)
+	for (ll i = 2; i <= maxnum; i++)
 	{
 		if(eratos[i])continue;
-		ans.insert(i);
-		for (int j = i; j <= maxnum; j+=i)eratos[j]=1;
+		ans.push_back(i);
+		for (ll j = i; j <= maxnum; j+=i)eratos[j]=1;
 	}
 	return ans;
 }
