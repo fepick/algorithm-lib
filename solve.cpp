@@ -3,6 +3,7 @@
 #define ll long long
 using namespace std;
 
+class MyMatrix;
 struct uf;//대충구현, 사이클판별 구현예정
 struct seg;
 struct fenwick;
@@ -15,6 +16,72 @@ ll dnc_pow(ll a,ll b,ll divisor=0);
 ll gcd(ll a,ll b);
 int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
 
+class MyMatrix
+{
+private:
+	const ll divnum = 1e9 + 7;
+
+public:
+	void printMatrix(vector<vector<ll>> A)
+	{
+		cout << "\nprint mat start------\n";
+		for (int i = 0; i < A.size(); i++)
+		{
+			for (int j = 0; j < A[0].size(); j++)
+			{
+				cout << A[i][j] << " ";
+			}
+			cout << "\n";
+		}
+		cout << "print mat end------\n";
+	}
+	void getUnitMatrix(vector<vector<ll>> &A, ll size)
+	{
+		A.clear();
+		A.assign(size, vector<ll>(size, 0));
+		for (int i = 0; i < size; i++)
+		{
+			A[i][i] = 1;
+		}
+	}
+	void transposeMatrix(vector<vector<ll>> A, vector<vector<ll>> &B)
+	{
+		int rsize = A.size();
+		int csize = A[0].size();
+		B.clear();
+		B.assign(csize, vector<ll>(rsize, 0));
+		for (int i = 0; i < rsize; i++)
+		{
+			for (int j = 0; j < csize; j++)
+			{
+				A[i][j] = B[j][i];
+			}
+		}
+	}
+	void mulMatrix(vector<vector<ll>> A, vector<vector<ll>> B, vector<vector<ll>> &C)
+	{
+		C.clear();
+		C.assign(A.size(), vector<ll>(B[0].size(), 0));
+		for (int i = 0; i < A.size(); i++)
+		{
+			for (int j = 0; j < B[0].size(); j++)
+			{
+				for (int k = 0; k < B.size(); k++)
+				{
+					C[i][j] += A[i][k] * B[k][j];
+					C[i][j] %= divnum;
+				}
+			}
+		}
+	}
+	void powMatrix(vector<vector<ll>> A, vector<vector<ll>> &B)
+	{
+		ll mmsize = A.size();
+		B.clear();
+		B.assign(mmsize, vector<ll>(mmsize, 0));
+		mulMatrix(A, A, B);
+	}
+};
 
 struct dijkstra
 {
