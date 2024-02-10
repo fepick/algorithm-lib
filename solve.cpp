@@ -18,9 +18,6 @@ int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
 
 class MyMatrix
 {
-private:
-	const ll divnum = 1e9 + 7;
-
 public:
 	void printMatrix(vector<vector<ll>> A)
 	{
@@ -35,51 +32,57 @@ public:
 		}
 		cout << "print mat end------\n";
 	}
-	void getUnitMatrix(vector<vector<ll>> &A, ll size)
+	void getNullMatrix(vector<vector<ll>> &A, ll rsize, ll csize)
 	{
 		A.clear();
-		A.assign(size, vector<ll>(size, 0));
+		A.assign(rsize, vector<ll>(csize, 0));
+	}
+	void getUnitMatrix(vector<vector<ll>> &A, ll size)
+	{
+		getNullMatrix(A,size,size);
 		for (int i = 0; i < size; i++)
-		{
-			A[i][i] = 1;
-		}
+		A[i][i] = 1;
 	}
 	void transposeMatrix(vector<vector<ll>> A, vector<vector<ll>> &B)
 	{
 		int rsize = A.size();
 		int csize = A[0].size();
-		B.clear();
-		B.assign(csize, vector<ll>(rsize, 0));
+		getNullMatrix(B,csize,rsize);
 		for (int i = 0; i < rsize; i++)
-		{
-			for (int j = 0; j < csize; j++)
-			{
-				A[i][j] = B[j][i];
-			}
-		}
+		for (int j = 0; j < csize; j++)
+		A[i][j] = B[j][i];
 	}
-	void mulMatrix(vector<vector<ll>> A, vector<vector<ll>> B, vector<vector<ll>> &C)
+	void mulMatrix(vector<vector<ll>> A, vector<vector<ll>> B, vector<vector<ll>> &C, ll divnum = 1e9+7)
 	{
-		C.clear();
-		C.assign(A.size(), vector<ll>(B[0].size(), 0));
+		getNullMatrix(C,A.size(),B[0].size());
 		for (int i = 0; i < A.size(); i++)
-		{
 			for (int j = 0; j < B[0].size(); j++)
-			{
-				for (int k = 0; k < B.size(); k++)
-				{
+				for (int k = 0; k < B.size(); k++){
 					C[i][j] += A[i][k] * B[k][j];
 					C[i][j] %= divnum;
 				}
+	}
+	void powMatrix(vector<vector<ll>> A, vector<vector<ll>> &B, ll n, ll divnum = 1e9+7)
+	{
+		if(n==1)B=A;
+		else if(n==2)mulMatrix(A,A,B,divnum);
+		else{
+			vector<vector<ll>> tmp;
+			getUnitMatrix(B,A.size());
+			while (n)
+			{
+				if(n%2==1){
+					mulMatrix(B,A,tmp,divnum);
+					B=tmp;
+					--n;
+				}
+				else{
+					mulMatrix(A,A,tmp,divnum);
+					A=tmp;
+					n=n>>1;
+				}
 			}
 		}
-	}
-	void powMatrix(vector<vector<ll>> A, vector<vector<ll>> &B)
-	{
-		ll mmsize = A.size();
-		B.clear();
-		B.assign(mmsize, vector<ll>(mmsize, 0));
-		mulMatrix(A, A, B);
 	}
 };
 
