@@ -3,6 +3,7 @@
 #define ll long long
 using namespace std;
 
+class mytrie;
 class MyMatrix;
 struct uf;//대충구현, 사이클판별 구현예정
 struct seg;
@@ -15,6 +16,74 @@ vector<ll> sosu(ll maxnum);
 ll dnc_pow(ll a,ll b,ll divisor=0);
 ll gcd(ll a,ll b);
 int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
+
+
+class mytrie	//from http://boj.kr/62d74191dbe8440c88d98f0e19a0aa7f
+{
+private:
+    #define is_debug 0
+    struct node
+    {
+        int idx = 0;
+        bool isend = 0;
+        int leafcnt = 0;
+        node* leafs[26]={0,};
+    };    
+    node* head;
+public:
+    int getans(string S){
+        node* cur = head->leafs[S[0]-'a'];
+        int ans = 1;
+        int pos = 1;
+        while (pos<S.length())
+        {
+            if(cur->isend||cur->leafcnt>1)ans++;
+            cur=cur->leafs[S[pos++]-'a'];
+        }
+        if(is_debug)cout<<"ans of "<<S<<" is "<<ans<<"\n";
+        return ans;
+    }
+    void insert(string S){
+        node* cur = head;
+        int pos = 0;
+        while (pos<S.length())
+        {
+            if(cur->leafs[S[pos]-'a']){//있으면 커서 이동
+                cur=cur->leafs[S[pos]-'a'];
+                pos++;
+                if(is_debug)cout<<"cur moved "<<(char)(cur->idx+'a')<<"\n";
+            }
+            else{//없으면 노드 추가
+                node* newnode = new node();
+                cur->leafs[S[pos]-'a']=newnode;
+                cur->leafcnt++;
+
+                cur = newnode;
+                cur->idx=S[pos]-'a';
+                pos++;
+                if(is_debug)cout<<"node added and cur moved "<<(char)(cur->idx+'a')<<"\n";
+            }
+        }
+        if(is_debug)cout<<"is end :"<<(char)(cur->idx+'a')<<"\n";
+        cur->isend=1;
+    }
+    void erase(node* n){
+        for (int i = 0; i < 26; i++)
+        {
+            if(n->leafs[i]){
+                erase(n->leafs[i]);
+            }
+        }
+        if(is_debug)cout<<"node erased : "<<(char)(n->idx+'a')<<"\n";
+        delete n;
+    }
+    mytrie(){
+        head = new node();
+    };
+    ~mytrie(){
+        erase(head);
+    };
+};
 
 class MyMatrix
 {
