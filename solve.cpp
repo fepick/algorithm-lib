@@ -3,6 +3,7 @@
 #define ll long long
 using namespace std;
 
+class Mykmp;
 class mytrie;
 class MyMatrix;
 struct uf;//대충구현, 사이클판별 구현예정
@@ -17,6 +18,61 @@ ll dnc_pow(ll a,ll b,ll divisor=0);
 ll gcd(ll a,ll b);
 int ccw(pair<ll,ll> a,pair<ll,ll> b, pair<ll,ll> c);
 
+class rotate90_arr2d{
+    // if(t%4==0){//1번회전
+    //     return {y,N+1-x};
+    // }
+    // else if(t%4==1){//2번회전
+    //     return {N+1-x,N+1-y};
+    // }
+    // else if(t%4==2){//3번회전
+    //     return {N+1-y,x};
+    // }
+    // else{
+    //     return {x,y};
+    // }
+};
+
+class Mykmp
+{
+    vector<int> failf(string s)
+    {
+        int len = s.length();
+        int j = 0;
+        vector<int> ans(len, 0);
+        for (int i = 1; i < len; i++)
+        {
+            while (j > 0 && s[i] != s[j])
+                j = ans[j - 1];
+            if (s[i] == s[j])
+                ans[i] = ++j;
+        }
+        return ans;
+    }
+    vector<int> kmp(string T, string P)
+    {
+        vector<int> ans;
+        vector<int> pi = failf(P);
+        int n = T.length(), m = P.length();
+        int j = 0;
+        for (int i = 0; i < n; i++)
+        {
+            while (j > 0 && P[j] != T[i])
+                j = pi[j - 1];
+            if (T[i] == P[j])
+            {
+                if (j == m - 1)
+                {
+                    ans.push_back(i - m + 1);
+                    j = pi[j];
+                }
+                else
+                    j++;
+            }
+        }
+        return ans;
+    }
+};
 
 class mytrie	//from http://boj.kr/62d74191dbe8440c88d98f0e19a0aa7f
 {
